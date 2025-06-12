@@ -1,0 +1,82 @@
+{
+  "name": "codeduel",
+  "displayName": "CodeDuel",
+  "description": "Do a duel between you and your friend , on a dsa/cp problem",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cfViews",
+          "title": "Codeforces",
+          "icon": "media/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "cfViews": [
+        {
+          "id": "cfSampleOutput",
+          "type": "webview",
+          "name": "Sample Output",
+          "icon": "media/icon.png"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "codeduel.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "codeduel.startduel",
+        "title": "Start Duel"
+      },
+      {
+        "command": "codeduel.joinduel",
+        "title": "Join Duel"
+      },
+      {
+        "command": "cf.runSampleTest",
+        "title": "Run Sample Test"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test",
+    "devstart": "nodemon server/server.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "cheerio": "^1.1.0",
+    "chromedriver": "^137.0.3",
+    "default-browser-id": "^5.0.0",
+    "express": "^5.1.0",
+    "geckodriver": "^5.0.0",
+    "node-fetch": "^3.3.2",
+    "open": "^10.1.2",
+    "puppeteer": "^24.10.0",
+    "selenium-webdriver": "^4.33.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  }
+}

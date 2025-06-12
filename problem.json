@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "title": "Sum of Two Numbers",
+    "description": "Given two integers a and b, return their sum.",
+    "input": "Two integers a and b (−10^9 ≤ a, b ≤ 10^9)",
+    "output": "A single integer — the sum of a and b.",
+    "example": {
+      "input": "3 5",
+      "output": "8"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Count the Digits",
+    "description": "Given an integer n, count how many digits it has.",
+    "input": "A single integer n (0 ≤ n ≤ 10^9)",
+    "output": "An integer representing the number of digits in n.",
+    "example": {
+      "input": "12345",
+      "output": "5"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Is Prime?",
+    "description": "Determine whether a given number n is a prime number.",
+    "input": "An integer n (2 ≤ n ≤ 10^6)",
+    "output": "Print 'YES' if n is prime, otherwise print 'NO'.",
+    "example": {
+      "input": "7",
+      "output": "YES"
+    }
+  },
+  {
+    "id": 4,
+    "title": "Is Square?",
+    "description": "Determine whether a given number n is a square number or not ?.",
+    "input": "An integer n (2 ≤ n ≤ 10^6)",
+    "output": "Print 'YES' if n is square of some number , otherwise print 'NO'.",
+    "example": {
+      "input": "9",
+      "output": "YES"
+    }
+  }
+]
