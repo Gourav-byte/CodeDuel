@@ -39,7 +39,9 @@ Here’s a quick walkthrough of how CodeDuel works inside VS Code:
 | **Winner Declaration**<br>One who submits first will win the duel | ![winner](media/Code_winner_declaration.png) |
 
 
----
+
+
+
 
 ##  How It Works
 
