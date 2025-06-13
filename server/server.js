@@ -147,6 +147,7 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                             let input = $('.problem-statement .input-specification').html();
                             let output = $('.problem-statement .output-specification').html();
 
+                            console.log("yo what's up");
                             console.log(statement);
                             console.log(input);
                             console.log(output);

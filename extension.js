@@ -131,8 +131,8 @@ function activate(context) {
 	
 	async function start_socket(v,room,username){
 		console.log('Connecting socket with', roomId, username);
-		// socket = io('https://codeduel-production-2fec.up.railway.app/');
-		socket = io('http://localhost:3000')
+		socket = io('https://codeduel-production-2fec.up.railway.app/');
+		// socket = io('http://localhost:3000')
 
 		socket.on('connect', () =>{
 			console.log('Connected with ID : ',socket.id);
