@@ -1,65 +1,60 @@
-# codeduel README
+# ⚔️ CodeDuel
 
-This is the README for your extension "codeduel". After writing up a brief description, we recommend including the following sections.
+**CodeDuel** is a competitive coding VS Code extension that lets two developers go head-to-head by solving the same Codeforces problem in real-time. The one who gets an accepted solution first — wins. It's built to bring the thrill of competitive programming duels directly inside your code editor.
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+> Compete. Code. Win. All inside VS Code.
 
 ---
 
-## Working with Markdown
+##  Features
 
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+-  Random Codeforces problem generator
+-  Real-time room-based duels between two coders
+-  Automatic winner detection using Codeforces API
+-  Pre-filled test cases for each problem
+-  Run test cases directly into VS Code.
+-  Clean, minimal UI integrated into VS Code
+-  Secure and battle-tested backend hosted on Railway
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
+---
 
-## For more information
+##  Preview
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## 🎬 Workflow Demo
 
-**Enjoy!**
+Here’s a quick walkthrough of how CodeDuel works inside VS Code:
+
+| Action | Preview |
+|-------|---------|
+| **Start a Duel** <br>Press F5 and then Press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows) to open the Command Palette.Enter your User id , then room Id will be generated. Pass It to your friend. | ![Start Duel](media/Code_Start_duel.png) |![user Id](media/Code_enter_user.png)| [room Id](media/Code_copy_roomid.png) | 
+
+| **Join a Duel**<br>Enter the room ID to connect. | ![Join Duel](media/Code_join_duel.png) | ![User Id](media/Code_enter_join_user.png) | ![room Id](media/Code_enter_roomId.png) |
+| **Problem Delivered**<br>Problem statement appears side-by-side with your code editor. | ![Problem Statement](media/Code_duel_begins.png) |
+| **Run Sample Test**<br>Check sample input/output. | ![Sample Test](media/Code_while_solving.png) |
+| **Winner Declaration**<br>One who submits first will win the duel | ![winner](media/Code_winner_declaration.png) |
+
+
+---
+
+##  How It Works
+
+> 🛠️ The extension is **not yet published** on the VS Code Marketplace. You’ll need to run it in development mode:
+
+1. Clone this repository.
+2. Open the project in **Visual Studio Code**.
+3. Press `F5` to launch a **development instance** of VS Code with the extension loaded.
+4. In the new window, use the command palette or UI to **start a duel**, share the `roomId` with a friend, and begin!
+
+💡 The backend is already deployed, so you **do not need to run `node server/server.js`** unless you plan to self-host or contribute to server-side changes.
+
+---
+
+##  Installation (for development)
+
+```bash
+# Clone the repository
+git clone https://github.com/Gourav-byte/CodeDuel
+
+# Install dependencies for the VS Code extension
+cd CodeDuel
+npm install

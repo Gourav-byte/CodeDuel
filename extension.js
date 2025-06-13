@@ -1,24 +1,11 @@
-// deploy it on render and on github as well and on market place of vs code as well !!.
 const vscode = require('vscode');
-// const io = require('socket.io-client');
-// const socket = io('http://localhost:8000');
 const fs = require('fs');
 const path = require('path');
 const io = require('socket.io-client');
 const cp = require('child_process');
-const {open} = require('open');
-// const axios = require('axios'); 
 const cheerio = require('cheerio');
 const{ exec } = require('child_process'); 
-//hello
-// const puppeteer = require('puppeteer');
-// const { Builder, By, until } = require('selenium-webdriver');
-// const getDefaultBrowserId = require('default-browser-id');
-// const chrome = require('selenium-webdriver/chrome');
-// const fetch = require('node-fetch');
-// const https = require('https');
-// const express = require('express');
-// const { getBrowserLaunchConfig } = require('./browserUtils');
+
 /**
  * @param {vscode.ExtensionContext} context
 */ 
@@ -26,7 +13,6 @@ let username = ""
 let roomId = ""
 let socket;
 let outputProvider;
-const LanguageId = 89;
 class SampleOutputViewProvider { 
 	constructor(context) {
 		this.context = context;
@@ -61,8 +47,9 @@ class SampleOutputViewProvider {
 				background-color: #2d2d2d;
 				padding: 1em;
 				border-radius: 8px;
-				overflow-x: auto;
 				color: #dcdcdc;
+				white-space: pre-wrap;
+				word-break: break-word;
 			}
 			
 		   </style>
@@ -99,8 +86,8 @@ function activate(context) {
 			}
 			// console.log("running test cases");
 			outputProvider?.updateOutput(" Running sample test...");
-			vscode.commands.executeCommand('workbench.view.extension.cfViews'),// show sidebar
-			vscode.commands.executeCommand('cfSampleOutput.focus') // open your view inside it
+			vscode.commands.executeCommand('workbench.view.extension.cfViews'),
+			vscode.commands.executeCommand('cfSampleOutput.focus')
 			runAndCheckSampleTest(workspaceFolder); 
 		})
 	);
@@ -108,9 +95,15 @@ function activate(context) {
 		// vscode.window.showInformationMessage('you are starting a duel');
 		username = await vscode.window.showInputBox({ prompt: 'Enter your username of Codeforces' });
       	roomId = Math.random().toString(36).substring(2, 8);
-      	vscode.window.showInformationMessage(`Your Room ID: ${roomId}`);
+      	vscode.window.showInformationMessage(`Room ID: ${roomId}`, 'Copy to Clipboard', 'Dismiss')
+		.then(selection => {
+			if (selection === 'Copy to Clipboard') 
+			{
+			vscode.env.clipboard.writeText(roomId);
+			vscode.window.showInformationMessage('Room ID copied to clipboard!');
+			}
+		});
 
-		// vscode.window.showInformationMessage('Problem sent to server');
 		if(username !== undefined && username != ""){
 			start_socket('codeduel.startduel',roomId,username);
 		}
@@ -131,8 +124,8 @@ function activate(context) {
 	
 	async function start_socket(v,room,username){
 		console.log('Connecting socket with', roomId, username);
-		// socket = io('https://codeduel-production-2fec.up.railway.app/');
-		socket = io('http://localhost:3000')
+		socket = io('https://codeduel-production-2fec.up.railway.app/');
+		// socket = io('http://localhost:3000')
 
 		socket.on('connect', () =>{
 			console.log('Connected with ID : ',socket.id);
@@ -171,7 +164,7 @@ function activate(context) {
 			if (timeDifference !== null) {
 				vscode.window.showInformationMessage(`Difference: ${timeDifference} seconds`);
 			}
-			socket.disconnect();  // Close socket
+			socket.disconnect();
 		});
 
 		socket.on('opponent_left', () => {
@@ -180,11 +173,7 @@ function activate(context) {
 		});
 		socket.on('start', async (msg) => {
 			const problemText = msg;
-			// console.log(problemText.statement);
-			// console.log(problemText.input);
-			// console.log(problemText.output);
-			// console.log(problemText.url);
-			// console.log(problemText.sampleTests);
+
 			const panel = vscode.window.createWebviewPanel(
 				'duelProblem',
 				'Problem Statement',
@@ -194,6 +183,16 @@ function activate(context) {
 					retainContextWhenHidden: true
 				}
 			);
+			
+			problemText.input = problemText.input.replace(/Input\s*/gi, '').replace(/Copy\s*/gi, '').trim();
+			problemText.input = problemText.input.replace(/Output\s*/gi, '').replace(/Copy\s*/gi, '').trim();
+
+			problemText.output = problemText.output.replace(/Input\s*/gi, '').replace(/Copy\s*/gi, '').trim();
+			problemText.output = problemText.output.replace(/Output\s*/gi, '').replace(/Copy\s*/gi, '').trim();
+
+			problemText.sampleTests = problemText.sampleTests.replace(/Copy\s*/gi, '').trim();
+			problemText.sampleTests = problemText.sampleTests.replace(/Copy\s*/gi, '').trim();
+
 			panel.webview.html = getWebviewContent(problemText,vscode.ViewColumn.One);
 
 			panel.webview.onDidReceiveMessage((message) =>{
@@ -234,20 +233,14 @@ function activate(context) {
 						const text = $(el).text();
 						$(el).replaceWith(text + '\n');
 					});
+
 					inputPre.find('br').replaceWith('\n');
 					outputPre.find('br').replaceWith('\n');
-					// inputPre.find('div').replaceWith('\n');
-					// outputPre.find('div').replaceWith('\n');
-					// Extract plain text preserving line breaks
 
-					// const sampleInput = extractSampleText(inputPre);
-					// const sampleOutput = extractSampleText(outputPre);
 
-					const firstInput = inputPre.text().trim();
-					const firstOutput = outputPre.text().trim();
+					let firstInput = inputPre.text().trim();
+					let firstOutput = outputPre.text().trim();
 
-					// console.log(firstInput);
-					// console.log(firstOutput);
 					fs.writeFileSync(inputPath, firstInput, 'utf8');
 					fs.writeFileSync(expectedPath, firstOutput, 'utf8');
 	
@@ -265,20 +258,6 @@ function activate(context) {
 	context.subscriptions.push(JoiningDuel);
 }
 
-function extractSampleText(preTag) {
-    if (!preTag || preTag.length === 0) return '';
-
-    let html = preTag.html();
-
-    html = html.replace(/<\/div>\s*<div>/g, '\n');
-
-    html = html.replace(/<\/?div>/g, '');
-
-    html = html.replace(/<br\s*\/?>/gi, '\n');
-
-    const $ = cheerio.load('<pre>' + html + '</pre>');
-    return $('pre').text().trim();
-}
 
 function getWebviewContent(problemText){
 	const { title, timeLimit, memoryLimit, statement, input, output ,sampleTests, url,contestId,index} = problemText;
@@ -335,12 +314,11 @@ function getWebviewContent(problemText){
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            position: sticky;
-            bottom: 0;
             margin-top: 2em;
           }
 		#runTestBtn {
 			display: block;
+			margin-left: auto;
 			padding: 0.8em 1.2em;
 			font-size: 16px;
 			background-color: #007acc;
@@ -348,9 +326,11 @@ function getWebviewContent(problemText){
 			border: none;
 			border-radius: 4px;
 			cursor: pointer;
-			position: sticky;
-			bottom: 0;
 			margin-top: 2em;
+		}
+		.upper-box{
+			display:flex;
+			justify-items:space-between;
 		}
       </style>
     </head>
@@ -381,8 +361,10 @@ function getWebviewContent(problemText){
         <h3>Link to the Problem Statement </h3>
         <a href = "${url}" style = "text-decoration:none;">${url}</a>
 
-		<button id="submit-btn"><a href = "https://codeforces.com/problemset/submit" style = "text-decoration:none; color:white;">Submit</a> </button>
-		<button id="runTestBtn"> Run Sample Test</button>
+		<div class = "upper-box">
+			<button id="submit-btn"><a href = "https://codeforces.com/problemset/submit" style = "text-decoration:none; color:white;">Submit</a> </button>
+			<button id="runTestBtn"> Run Sample Test</button>
+		</div>
 
         <script>
 			console.log("webview script started");
@@ -421,8 +403,8 @@ function formatLatexMath(rawHtml) {
 function convertCFMathToLatex(html) {
 	if(html){
 		return html
-		  .replace(/\$begin:math:text\$/g, '')   // inline math start
-		  .replace(/\$end:math:text\$/g, '');    // inline math end
+		  .replace(/\$begin:math:text\$/g, '')
+		  .replace(/\$end:math:text\$/g, ''); 
 	}
 }
 function runAndCheckSampleTest(workspacePath) {
@@ -457,15 +439,6 @@ function runAndCheckSampleTest(workspacePath) {
   });
 }
 
-// async function getDefaultBrowser() {
-//     const browserId = await getDefaultBrowserId();
-//     if (['chrome', 'brave'].includes(browserId)) return 'chrome';
-//     if (browserId === 'firefox') return 'firefox';
-//     if (browserId === 'safari') return 'safari';
-//     throw new Error('Unsupported default browser: ' + browserId);
-// }
-
-// This method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
