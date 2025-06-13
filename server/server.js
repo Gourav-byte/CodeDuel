@@ -8,6 +8,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 // const vscode = require('vscode');
 const {Server} = require('socket.io');
+const puppeteer = require('puppeteer');
 
 const app = express();
 const server = createServer(app);
@@ -94,7 +95,7 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
         // let problems = {};
         const url2 = `https://codeforces.com/api/problemset.problems`;
         return new Promise((resolve, reject) => {
-            exec(`curl -A "Mozilla/5.0" "${url2}"`, { maxBuffer: 1024 * 1024 * 5 }, (err, stdout) => {
+            exec(`curl -A "Mozilla/5.0" "${url2}"`, { maxBuffer: 1024 * 1024 * 5 }, async (err, stdout) => {
                 if (err) {
                     console.error('Curl error:', err.message);
                 }
@@ -119,58 +120,109 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                     const userAgent = `"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0"`;
 
 
-                    exec(`curl -s -A ${userAgent} "${url}"`, { maxBuffer: 1024 * 1024 * 3 }, (err, stdout) => {
-                        if (err) {
-                            return reject(new Error('Failed to fetch problem page'));
-                        }
+                    // exec(`curl -s -A ${userAgent} "${url}"`, { maxBuffer: 1024 * 1024 * 3 }, (err, stdout) => {
+                    //     if (err) {
+                    //         return reject(new Error('Failed to fetch problem page'));
+                    //     }
     
-                        try {
-                            const $ = cheerio.load(stdout);
-                            const title = $('.problem-statement .title').first().text().trim();
+                    //     try {
+                    //         const $ = cheerio.load(stdout);
+                    //         const title = $('.problem-statement .title').first().text().trim();
 
-                            console.log(title);
-                            const timeLimitBlock = $('.time-limit');
-                            const timeLabel = timeLimitBlock.find('.property-title').text(); // "time limit per test"
-                            const timeValue = timeLimitBlock.contents().filter(function() {
-                            return this.type === 'text';
-                            }).text().trim();
-                            const timeLimit = `${timeLabel} ${timeValue}`;
+                    //         console.log(title);
+                    //         const timeLimitBlock = $('.time-limit');
+                    //         const timeLabel = timeLimitBlock.find('.property-title').text(); // "time limit per test"
+                    //         const timeValue = timeLimitBlock.contents().filter(function() {
+                    //         return this.type === 'text';
+                    //         }).text().trim();
+                    //         const timeLimit = `${timeLabel} ${timeValue}`;
 
-                            const memoryLimitBlock = $('.memory-limit');
-                            const memoryLabel = memoryLimitBlock.find('.property-title').text(); // "memory limit per test"
-                            const memoryValue = memoryLimitBlock.contents().filter(function() {
-                            return this.type === 'text';
-                            }).text().trim();
-                            const memoryLimit = `${memoryLabel} ${memoryValue}`;
+                    //         const memoryLimitBlock = $('.memory-limit');
+                    //         const memoryLabel = memoryLimitBlock.find('.property-title').text(); // "memory limit per test"
+                    //         const memoryValue = memoryLimitBlock.contents().filter(function() {
+                    //         return this.type === 'text';
+                    //         }).text().trim();
+                    //         const memoryLimit = `${memoryLabel} ${memoryValue}`;
 
-                            let statement = $('.problem-statement .header + div').html() || '';
-                            let input = $('.problem-statement .input-specification').html();
-                            let output = $('.problem-statement .output-specification').html();
+                    //         let statement = $('.problem-statement .header + div').html() || '';
+                    //         let input = $('.problem-statement .input-specification').html();
+                    //         let output = $('.problem-statement .output-specification').html();
 
-                            console.log("yo what's up");
-                            console.log(statement);
-                            console.log(input);
-                            console.log(output);
-                            const sampleTests = $('.sample-test').html() || '';
+                    //         console.log("yo what's up");
+                    //         console.log(statement);
+                    //         console.log(input);
+                    //         console.log(output);
+                    //         const sampleTests = $('.sample-test').html() || '';
 
-                            console.log(timeLimit);
-                            console.log(memoryLimit);
-                            resolve({
-                                title,
-                                timeLimit,
-                                memoryLimit,
-                                statement,
-                                input,
-                                output,
-                                sampleTests,
-                                url,
-                                contestId,
-                                index,
-                            });
-                        } catch (e) {
-                            reject(new Error('Failed to parse problem page'));
-                        }
+                    //         console.log(timeLimit);
+                    //         console.log(memoryLimit);
+                    //         resolve({
+                    //             title,
+                    //             timeLimit,
+                    //             memoryLimit,
+                    //             statement,
+                    //             input,
+                    //             output,
+                    //             sampleTests,
+                    //             url,
+                    //             contestId,
+                    //             index,
+                    //         });
+                    //     } catch (e) {
+                    //         reject(new Error('Failed to parse problem page'));
+                    //     }
+                    // });
+                    try {
+                    const browser = await puppeteer.launch({
+                        headless: true,
+                        args: ['--no-sandbox'],
                     });
+
+                    const page = await browser.newPage();
+                    await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0");
+                    await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+                    const html = await page.content();
+                    await browser.close();
+
+                    const $ = cheerio.load(html);
+                    const title = $('.problem-statement .title').first().text().trim();
+
+                    const timeLimitBlock = $('.time-limit');
+                    const timeLabel = timeLimitBlock.find('.property-title').text();
+                    const timeValue = timeLimitBlock.contents().filter(function () {
+                        return this.type === 'text';
+                    }).text().trim();
+                    const timeLimit = `${timeLabel} ${timeValue}`;
+
+                    const memoryLimitBlock = $('.memory-limit');
+                    const memoryLabel = memoryLimitBlock.find('.property-title').text();
+                    const memoryValue = memoryLimitBlock.contents().filter(function () {
+                        return this.type === 'text';
+                    }).text().trim();
+                    const memoryLimit = `${memoryLabel} ${memoryValue}`;
+
+                    let statement = $('.problem-statement .header + div').html() || '';
+                    let input = $('.problem-statement .input-specification').html();
+                    let output = $('.problem-statement .output-specification').html();
+                    const sampleTests = $('.sample-test').html() || '';
+
+                    resolve({
+                        title,
+                        timeLimit,
+                        memoryLimit,
+                        statement,
+                        input,
+                        output,
+                        sampleTests,
+                        url,
+                        contestId,
+                        index,
+                    });
+
+                } catch (e) {
+                    reject(new Error('Failed to scrape with puppeteer: ' + e.message));
+                }
                 } 
                 catch (e) {
                     console.error('JSON parse error:', e.message);
