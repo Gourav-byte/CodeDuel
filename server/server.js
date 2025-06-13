@@ -13,10 +13,9 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
 });
-// app.get('/', (req, res) => {
-//     // res.send('<h1>Hello world2</h1>');
-//     res.sendFile(join(__dirname,'index.html'));
-// });
+app.get('/', (req, res) => {
+    res.send('Server is Working !! ');
+});
 let rooms = {};
 
 console.log('Server started');
