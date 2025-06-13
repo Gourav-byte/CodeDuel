@@ -26,11 +26,16 @@ Here’s a quick walkthrough of how CodeDuel works inside VS Code:
 
 | Action | Preview |
 |-------|---------|
-| **Start a Duel** <br>Press F5 and then Press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows) to open the Command Palette.Enter your User id , then room Id will be generated. Pass It to your friend. | ![Start Duel](media/Code_Start_duel.png) |![user Id](media/Code_enter_user.png)| [room Id](media/Code_copy_roomid.png) | 
-
-| **Join a Duel**<br>Enter the room ID to connect. | ![Join Duel](media/Code_join_duel.png) | ![User Id](media/Code_enter_join_user.png) | ![room Id](media/Code_enter_roomId.png) |
+| **Start a Duel** <br>Press F5 and then Press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows) to open the Command Palette.Enter your User id , then room Id will be generated. Pass It to your friend. | [room Id](media/Code_copy_roomid.png) |
+|-------|---------|
+| **Join a Duel**<br>Use the command Join Duel in command palette| ![room Id](media/Code_join_duel.png) |
+|-------|---------|
+| **Enter Room Id**<br>Enter the room ID to connect.| ![room Id](media/Code_enter_roomId.png) |
+|-------|---------|
 | **Problem Delivered**<br>Problem statement appears side-by-side with your code editor. | ![Problem Statement](media/Code_duel_begins.png) |
-| **Run Sample Test**<br>Check sample input/output. | ![Sample Test](media/Code_while_solving.png) |
+|-------|---------|
+| **Run Sample Test**<br>Check sample input/output inside Vs code only | ![Sample Test](media/Code_while_solving.png) |
+|-------|---------|
 | **Winner Declaration**<br>One who submits first will win the duel | ![winner](media/Code_winner_declaration.png) |
 
 
