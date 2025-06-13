@@ -116,7 +116,7 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                     
 
                     const url = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
-                    const userAgent = `'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0'`;
+                    const userAgent = `"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0"`;
 
 
                     exec(`curl -s -A ${userAgent} "${url}"`, { maxBuffer: 1024 * 1024 * 3 }, (err, stdout) => {
