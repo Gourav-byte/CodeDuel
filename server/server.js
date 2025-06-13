@@ -71,6 +71,7 @@ io.on('connection',(socket) =>{
 
     });
 
+
 async function fetchAndSendProblem(room) {
   try {
     const problemData = await fetchRandomCodeforcesProblemWithDetails();
@@ -86,6 +87,8 @@ async function fetchAndSendProblem(room) {
     io.to(room).emit('error', 'Failed to fetch problem data');
   }
 }
+
+
 function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 1600) {
   try {
         // let problems = {};
@@ -125,6 +128,7 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                             const $ = cheerio.load(stdout);
                             const title = $('.problem-statement .title').first().text().trim();
 
+                            console.log(title);
                             const timeLimitBlock = $('.time-limit');
                             const timeLabel = timeLimitBlock.find('.property-title').text(); // "time limit per test"
                             const timeValue = timeLimitBlock.contents().filter(function() {
@@ -143,6 +147,9 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                             let input = $('.problem-statement .input-specification').html();
                             let output = $('.problem-statement .output-specification').html();
 
+                            console.log(statement);
+                            console.log(input);
+                            console.log(output);
                             const sampleTests = $('.sample-test').html() || '';
 
                             console.log(timeLimit);
@@ -311,3 +318,4 @@ function startPollingWinner(roomId) {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+// server.listen(3000,() => console.log("server is listening to port 3000"));

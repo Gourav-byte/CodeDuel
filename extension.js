@@ -131,7 +131,8 @@ function activate(context) {
 	
 	async function start_socket(v,room,username){
 		console.log('Connecting socket with', roomId, username);
-		socket = io('http://localhost:3000');
+		// socket = io('https://codeduel-production-2fec.up.railway.app/');
+		socket = io('http://localhost:3000')
 
 		socket.on('connect', () =>{
 			console.log('Connected with ID : ',socket.id);
@@ -179,6 +180,11 @@ function activate(context) {
 		});
 		socket.on('start', async (msg) => {
 			const problemText = msg;
+			// console.log(problemText.statement);
+			// console.log(problemText.input);
+			// console.log(problemText.output);
+			// console.log(problemText.url);
+			// console.log(problemText.sampleTests);
 			const panel = vscode.window.createWebviewPanel(
 				'duelProblem',
 				'Problem Statement',
@@ -282,6 +288,11 @@ function getWebviewContent(problemText){
     <html lang="en">
     <head>
       <meta charset="UTF-8">
+	  <meta http-equiv="Content-Security-Policy" content="
+		default-src 'none';
+		img-src https: data:;
+		script-src 'unsafe-inline' https:;
+		style-src 'unsafe-inline' https:;">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${title}</title>
 	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
