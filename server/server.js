@@ -13,19 +13,15 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
 });
-app.get('/', (req, res) => {
-    // res.send('<h1>Hello world2</h1>');
-    res.sendFile(join(__dirname,'index.html'));
-});
-// let cnt=0;
+// app.get('/', (req, res) => {
+//     // res.send('<h1>Hello world2</h1>');
+//     res.sendFile(join(__dirname,'index.html'));
+// });
 let rooms = {};
 
 console.log('Server started');
 io.on('connection',(socket) =>{
-    console.log('a user is connected');
-    console.log('Id' , socket.id);
     socket.on('join',({room,username,v})=>{
-        // cnt += 1;
         if (!rooms[room]) {
             rooms[room] = {
                 user:[],
@@ -36,7 +32,6 @@ io.on('connection',(socket) =>{
             }
                 rooms[room].timeoutId = setTimeout(() => {
                     if(rooms[room].user.length === 1){
-                        console.log("no one has came ");
                         io.to(room).emit('error', 'No opponent joined. Duel expired.');
                         io.in(room).socketsLeave(room);
                         socket.disconnect();
@@ -57,7 +52,7 @@ io.on('connection',(socket) =>{
         }
         
         socket.join(room);
-        console.log(`${username} joined the room `);
+
         rooms[room].user.push({ id: socket.id, username });
         if (rooms[room].user.length === 2 && rooms[room].timeoutId) {
             clearTimeout(rooms[room].timeoutId);
@@ -65,10 +60,9 @@ io.on('connection',(socket) =>{
             socket.to(room).emit('user_added',username);
             
             fetchAndSendProblem(room).then(() =>{
-                console.log("both players are in ");
-                console.log("starting to pool");
-                console.log(rooms);
+
                 startPollingWinner(room);
+
             });
 
         } 
@@ -82,14 +76,14 @@ async function fetchAndSendProblem(room) {
   try {
     const problemData = await fetchRandomCodeforcesProblemWithDetails();
     const {contestId,index} = problemData;
-    console.log(contestId);
-    console.log(index);
+
     rooms[room].contestId = contestId;
     rooms[room].index = index;
+
     io.to(room).emit('start', problemData);
   } 
   catch (error) {
-    console.error('Failed to fetch problem:', error);
+
     io.to(room).emit('error', 'Failed to fetch problem data');
   }
 }
@@ -118,10 +112,6 @@ function fetchRandomCodeforcesProblemWithDetails(minRating = 800, maxRating = 16
                     const randomProblem = filtered[Math.floor(Math.random() * filtered.length)];
                     const { contestId, index, name, rating } = randomProblem;
                     
-                    console.log(contestId);
-                    console.log(index);
-                    console.log(name);
-                    console.log(rating);
 
                     const url = `https://codeforces.com/problemset/problem/${contestId}/${index}`;
                     const userAgent = `'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0'`;
@@ -203,28 +193,32 @@ async function checkVerdict(handle, contestId, problemIndex) {
     }
     return null;
 }
-
+ 
 function startPollingWinner(roomId) {
     
     const max_wait_time = 2*60*60*1000;
     const starting_time = Date.now();
     const intervalId = setInterval(async () => {
-
+ 
         const room = rooms[roomId];
-        console.log(room.intervalId);
+
         if (room.user.length === 0) {
             if (room.intervalId) {
                 clearInterval(room.intervalId);
+
                 room.intervalId = null;
-                console.log("Stopped polling due to all users disconnecting.");
+                
                 return ;
             }
             delete rooms[roomId];
+        } 
+        if (!room || room.user.length !== 2 || !room.contestId || !room.index){
+            return;
         }
-        if (!room || room.user.length !== 2 || !room.contestId || !room.index) return;
+
         const { user, contestId, index } = room;
         const times = await Promise.all(user.map(u =>{
-            console.log(u.username);
+            // console.log(u.username);
             return checkVerdict(u.username, contestId, index);
         }));
 
@@ -274,7 +268,7 @@ function startPollingWinner(roomId) {
                 delete rooms[roomId];
             }
         }
-    }, 10000); // every 10 seconds
+    }, 10000);
 
     const room = rooms[roomId];
     if(room){
@@ -282,28 +276,31 @@ function startPollingWinner(roomId) {
     }
 }
     socket.on('disconnect',() =>{
-        console.log(rooms);
-        console.log(`User with this socket id: ${socket.id} disconnected`);
+        // console.log(rooms);
+        // console.log(`User with this socket id: ${socket.id} disconnected`);
         // cnt -= 1;
         for (const roomId in rooms) {
+            // console.log("not working");
 			const room = rooms[roomId];
-			const userIndex = room.user.findIndex(u => u.socketId === socket.id);
+			const userIndex = room.user.findIndex(u => u.id === socket.id);
 
+            // console.log(userIndex);
 			if (userIndex !== -1) {
 				room.user.splice(userIndex, 1);
 
 				io.to(roomId).emit('opponent_left');
 
 				if (room.intervalId) {
+                    // console.log("clearing interval :",room.intervalId);
 					clearInterval(room.intervalId);
 					room.intervalId = null;
-					console.log("Stopped polling due to disconnect.");
+					// console.log("Stopped polling due to disconnect.");
                     return ;
 				}
 
 				if (room.user.length === 0) {
 					delete rooms[roomId];
-                    console.log(rooms);
+                    // console.log(rooms);
                     return ;
 				}
 				break;
