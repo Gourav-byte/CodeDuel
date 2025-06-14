@@ -1,12 +1,8 @@
-# ⚔️ CodeDuel - Competitive Coding Battles in VS Code
+# ⚔️ CodeDuel
 
-**CodeDuel** is a VS Code extension that lets you challenge your friends to real-time competitive programming duels — without ever leaving your editor.The one who gets an accepted solution first — wins. It's built to bring the thrill of competitive programming duels directly inside your code editor.
+**CodeDuel** is a competitive coding VS Code extension that lets two developers go head-to-head by solving the same Codeforces problem in real-time. The one who gets an accepted solution first — wins. It's built to bring the thrill of competitive programming duels directly inside your code editor.
 
 > Compete. Code. Win. All inside VS Code.
-
-- Compete head-to-head by solving the same Codeforces problem  
-- See who submits first and wins — results shown live in VS Code  
-- Log in with your Codeforces ID to get started  
 
 ---
 
@@ -20,40 +16,9 @@
 -  Clean, minimal UI integrated into VS Code
 -  Secure and battle-tested backend hosted on Railway
 
-## WorkFlow
-- **Open a Folder**
-  Open a folder using VS Code .
-
-- **Start a Duel**  
-  Use the VS Code Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and run the `Start Duel` command. Share the generated **Room ID** with a friend.
-
-- **Join a Duel**  
-  Your friend runs the `Join Duel` command and enters the shared Room ID. Once both players are in, the duel begins.
-
-- **Same Problem, Same Time**  
-  A random Codeforces problem is fetched for both players — Both gets the exact same challenge.
-
-- **Codeforces Integration**  
-  When you submit your solution on Codeforces, CodeDuel tracks the verdicts and updates the VS Code interface.
-
-- **Live Winner Detection**  
-  The first person to get an **Accepted** verdict wins the duel. A win/loss message is shown right in VS Code.
-
 ---
 
-## Setup
-
-1. Install the extension from the VS Code Marketplace.
-2. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-3. Search for and run either:
-   - `CodeDuel: Start Duel`
-   - `CodeDuel: Join Duel`
-4. You'll be prompted to enter your **Codeforces handle** (only once per session)
-5. Share the **roomId** with your friend
-6. Let the games begin!
-
----
-
+##  Preview
 
 ## 🎬 Workflow Demo
 
@@ -70,39 +35,26 @@ Here’s a quick walkthrough of how CodeDuel works inside VS Code:
 
 
 
-## Technologies Used
 
-- VS Code Extension API  
-- Node.js backend (Socket.IO)
-- Codeforces API
-- Cheerio and Puppeteer for Problem extraction
+##  How It Works
 
----
+> 🛠️ The extension is **not yet published** on the VS Code Marketplace. You’ll need to run it in development mode:
 
-## Notes
+1. Clone this repository.
+2. Open the project in **Visual Studio Code**.
+3. Press `F5` to launch a **development instance** of VS Code with the extension loaded.
+4. In the new window, use the command palette or UI to **start a duel**, share the `roomId` with a friend, and begin!
 
-- Make sure you’re logged in to Codeforces before submitting your code.  
-- Extension does **not** store your credentials — only your Codeforces handle.  
-- You can continue solving the problem even after one player wins — great for practice!
+💡 The backend is already deployed, so you **do not need to run `node server/server.js`** unless you plan to self-host or contribute to server-side changes.
 
 ---
 
-## Future Plans
+##  Installation (for development)
 
-- Leaderboards & rating system  
-- Support for more platforms (e.g., LeetCode, AtCoder)  
-- Support submission from VS Code only
-- Support Complete contest between 2 users
+```bash
+# Clone the repository
+git clone https://github.com/Gourav-byte/CodeDuel
 
----
-
-## Contributing
-
-Contributions and suggestions are welcome! Feel free to fork this repo, open issues, or submit pull requests.
-
----
-
-## Author
-
-Made with ❤️ by [Gourav Chourasiya](https://github.com/Gourav-byte)  
-Built for focused growth in competitive programming 💪
+# Install dependencies for the VS Code extension
+cd CodeDuel
+npm install
