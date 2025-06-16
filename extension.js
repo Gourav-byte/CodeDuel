@@ -14,7 +14,7 @@ let roomId = ""
 let socket;
 let outputProvider;
 class SampleOutputViewProvider { 
-	constructor(context) {
+	constructor(context) { 
 		this.context = context;
 		this._view = undefined;
 	}
